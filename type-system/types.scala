@@ -44,3 +44,84 @@ b1.occupied += c1
 b2.occupied += c2
 // this wont compile
 // b2.occupied += c1
+
+// 2. Example using path-dependent types
+trait Observable {
+  type Handle
+
+  protected var callbacks = Map[Handle, this.type => Unit]()
+
+  def observe(callback: this.type => Unit): Handle = {
+    val handle = createHandle(callback)
+    callbacks += (handle -> callback)
+    handle
+  }
+
+  def unobservable(handle: Handle): Unit = {
+    callbacks -= handle
+  }
+
+  protected def createHandle(callback: this.type => Unit): Handle
+
+  protected def notifyListeners(): Unit = for(callback <- callbacks.values) callback(this)
+}
+
+trait DefaultHandles extends Observable {
+  type Handle = (this.type => Unit)
+  protected def createHandle(callback: this.type => Unit): Handle = callback
+}
+
+case class VariableStore(private var value: Int) extends Observable with DefaultHandles {
+  def get = value
+  def set(newValue: Int): Unit = {
+    value = newValue
+    notifyListeners()
+  }
+  override def toString: String = s"VariableStore($value)"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
