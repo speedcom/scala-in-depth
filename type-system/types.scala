@@ -57,7 +57,7 @@ trait Observable {
     handle
   }
 
-  def unobservable(handle: Handle): Unit = {
+  def unobserve(handle: Handle): Unit = {
     callbacks -= handle
   }
 
